@@ -1,0 +1,9 @@
+{
+  "id": "reverse-proxy",
+  "name": "Reverse Proxy",
+  "description": "Nginx training",
+  "type": "use-case",
+  "version": "0.0.1",
+  "dependencies": [],
+  "environmentVariables": {}
+}

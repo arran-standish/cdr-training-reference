@@ -3,4 +3,4 @@ image: jembi/platform
 logPath: /tmp/logs
 
 packages:
-    - <<package-id>>
+    - reverse-proxy

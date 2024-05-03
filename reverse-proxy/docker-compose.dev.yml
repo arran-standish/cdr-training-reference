@@ -1,0 +1,8 @@
+version: '3.9'
+
+services:
+  reverse-proxy:
+    ports:
+      - target: 8080
+        published: 8080
+        mode: host
