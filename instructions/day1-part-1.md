@@ -47,3 +47,8 @@ declare STACK="reverse-proxy"
 docker::deploy_service "$STACK" "${COMPOSE_FILE_PATH}" "docker-compose.yml" "$package_dev_compose_filename"
 ```
 3. Remove the call to `docker::deploy_sanity` just under the call to `deploy_service` since `deploy_service` includes a sanity check in it now.
+4. Update `destroy_package` function to replace the `service_destroy` function call to `stack_destory` instead (line ~55)
+```sh
+docker::service_destroy "${SERVICE_NAMES[@]}" # turns into
+docker::stack_destroy $STACK
+```
