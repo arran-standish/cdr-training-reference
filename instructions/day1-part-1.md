@@ -91,5 +91,8 @@ You can now deploy the reverse-proxy package.
 ```
 > Instructor aid: Be sure to remind them that the `--dev` flag is required otherwise no ports will be exposed and will be unable to access nginx inside docker.
 
-## 6 - (Optional) Create a image build file
+## 6 - Test the package
+If everything went smoothly you can now go to localhost:8080 on your browser and it will display the nginx landing page.
+
+## 7 - (Optional) Create a image build file
 To make things easier you can create a file that executes that command so it's quicker and easier to rebuild the image. That is where the `build-image.sh` files comes in.
