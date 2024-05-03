@@ -1,0 +1,1 @@
+docker imaage build . -t jembi/cdr-training

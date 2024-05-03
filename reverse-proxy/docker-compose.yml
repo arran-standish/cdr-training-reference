@@ -3,3 +3,13 @@ version: '3.9'
 services:
   reverse-proxy:
     image: nginx:stable
+    configs:
+      - source: nginx.conf
+        target: /etc/nginx/nginx.conf
+
+configs:
+  nginx.conf:
+    file: ./config/nginx.conf
+    name: nginx.conf-${nginx_conf_DIGEST:?err}
+    labels: 
+      name: reverse-proxy
