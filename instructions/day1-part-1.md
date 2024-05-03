@@ -94,5 +94,11 @@ You can now deploy the reverse-proxy package.
 ## 6 - Test the package
 If everything went smoothly you can now go to localhost:8080 on your browser and it will display the nginx landing page.
 
-## 7 - (Optional) Create a image build file
+## 7 - Cleanup
+After everything works we can clear out our project by running the command
+```sh
+./instant-linux project destroy
+```
+
+## 8 - (Optional) Create a image build file
 To make things easier you can create a file that executes that command so it's quicker and easier to rebuild the image. That is where the `build-image.sh` files comes in.
