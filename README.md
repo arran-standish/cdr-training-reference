@@ -1,0 +1,1 @@
+A simple reference repo to aid with the offline CDR training. Change branches to the different days to get a snapshot of what the platform setup should look like.
