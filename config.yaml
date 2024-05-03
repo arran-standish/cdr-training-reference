@@ -1,5 +1,5 @@
 projectName: training-reference
-image: jembi/platform
+image: jembi/cdr-training
 logPath: /tmp/logs
 
 packages:
