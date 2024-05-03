@@ -1,0 +1,6 @@
+projectName: training-reference
+image: jembi/platform
+logPath: /tmp/logs
+
+packages:
+    - <<package-id>>
