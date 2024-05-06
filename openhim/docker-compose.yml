@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+  mongodb: 
+    image: mongo:4.0
+    volumes:
+      - "mongo-data:/data/db"
+
+  openhim-core:
+    image: jembi/openhim-core
+    environment:
+      - mongo_url=${MONGO_URL}
+      - mongo_atnaUrl=${MONGO_ATNAURL}
+      - api_authenticationTypes=["token", "basic", "openid", "local"]
+    networks:
+      reverse-proxy:
+      default:
+
+  openhim-console:
+    image: jembi/openhim-console
+    networks:
+      reverse-proxy:
+      default:
+
+volumes:
+  mongo-data:
+
+networks:
+  reverse-proxy:
+    name: reverse-proxy_public
+    external: true
+  default:

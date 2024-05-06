@@ -1,0 +1,12 @@
+{
+  "id": "openhim",
+  "name": "OpenHIM",
+  "description": "OpenHIM training",
+  "type": "use-case",
+  "version": "0.0.1",
+  "dependencies": ["reverse-proxy"],
+  "environmentVariables": {
+      "MONGO_URL": "mongodb://mongodb/openhim",
+      "MONGO_ATNAURL": "mongodb://mongodb/openhim"
+  }
+}

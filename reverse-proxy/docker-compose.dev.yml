@@ -3,6 +3,6 @@ version: '3.9'
 services:
   reverse-proxy:
     ports:
-      - target: 8080
-        published: 8080
+      - target: 80
+        published: 80
         mode: host
