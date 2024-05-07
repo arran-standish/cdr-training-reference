@@ -63,7 +63,8 @@ configs:
     labels: 
       name: reverse-proxy
 ```
-> Instruction aid: you'll need to give this to them though since they won't be able to figure this out themselves the first time around. You can also probably show them the nginx.conf if you want otherwise they'll have to go digging around nginx docs, up to you though.
+> Instruction aid: you'll need to give this docker config setup to them though since they won't be able to figure this out themselves the first time around (especially the config digest stuff).
+> Side note: I'm not sure how clued up they are on nginx so you may need to either give them the nginx config or help them alot with it. Also the stream section of nginx will have to be something you tell them about I imagine.
 
 ### 3.4.2 - Attach the config to the service 
 Pretty straight forward, since you have the config defined in the compose file you just need to add it to the service, the source is the name you specified in the configs sections (in this case it was nginx.conf).
