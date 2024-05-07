@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  kafka-mapping-consumer:
+    image: jembi/eth-kafka-mapping-consumer:1.0.7
+    networks:
+      kafka:
+    environment:
+      ES_HOSTS: ${ES_HOSTS}
+      ES_USERNAME: ${ES_USERNAME}
+      ES_PASSWORD: ${ES_PASSWORD}
+      KAFKA_HOSTS: ${KAFKA_HOSTS}
+
+networks:
+  kafka:
+    name: kafka_public
+    external: true

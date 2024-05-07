@@ -3,8 +3,15 @@ version: '3.9'
 services:
   hapi-fhir:
     image: hapiproject/hapi
+    networks:
+      public:
     volumes:
       - "hapi-data:/data/hapi"
 
 volumes:
   hapi-data:
+
+networks:
+  public:
+    name: hapi-fhir_public
+    external: true

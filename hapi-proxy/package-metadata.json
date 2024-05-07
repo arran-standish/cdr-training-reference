@@ -1,0 +1,13 @@
+{
+  "id": "hapi-proxy",
+  "name": "Hapi Proxy training",
+  "description": "hapi proxy",
+  "type": "infrastructure",
+  "version": "0.0.1",
+  "dependencies": ["kafka", "hapi-fhir"],
+  "environmentVariables": {
+    "HAPI_SERVER_URL": "http://hapi-fhir:8080/fhir",
+    "KAFKA_HOSTS": "kafka:9092",
+    "HAPI_SERVER_VALIDATE_FORMAT": "NONE"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "id": "kafka",
+  "name": "Kafka",
+  "description": "Kafka training",
+  "type": "infrastructure",
+  "version": "0.0.1",
+  "dependencies": [],
+  "environmentVariables": {}
+}

@@ -3,6 +3,20 @@ image: jembi/cdr-training
 logPath: /tmp/logs
 
 packages:
-    - reverse-proxy
-    - openhim
-    - hapi-fhir
+  - reverse-proxy
+  - openhim
+  - hapi-fhir
+  - kafka
+  - hapi-proxy
+  - kafka-mapping-consumer
+
+profiles:
+  - name: training
+    packages: 
+      - reverse-proxy
+      - openhim
+      - hapi-fhir
+      - kafka
+      - hapi-proxy
+    dev: true
+    only: false
