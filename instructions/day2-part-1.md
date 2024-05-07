@@ -104,6 +104,17 @@ Since openhim binds port 8080 we now need to change the nginx port bindings. We 
   }
 ```
 5. Add ports 5001 and 5000 to the reverse-proxy dev file.
+6. Add a stream section to nginx and bind it to port 8080 (see the nginx config comment for more info why it is a stream)
+```conf
+  stream {
+    server {
+      listen      8080;
+      resolver    127.0.0.11 valid=30s;
+      proxy_pass  openhim-core:8080;
+    }
+  }
+```
+7. Add ports 8080 to reverse-proxy dev file.
 
 ## 3 - Add reverse-proxy as a dependency to openhim
 Under the `package-metadata.json` file add the name of the nginx package we defined `reverse-proxy` for this training reference.
