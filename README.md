@@ -4,5 +4,5 @@ A simple reference repo to aid with the offline CDR training. Change branches to
 [Exercise 1 - Setting up project with nginx package](instructions/day1-part-1.md)
 
 ## Day 2
-[Exercise 1 - Setting up OpenHIM with nginx](instructions/day2-part-1.md)
+[Exercise 1 - Setting up OpenHIM with nginx and Hapi FHIR](instructions/day2-part-1.md)
 
