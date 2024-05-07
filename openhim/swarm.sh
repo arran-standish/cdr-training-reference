@@ -36,16 +36,14 @@ function import_sources() {
 }
 
 function initialize_package() {
-  local package_dev_compose_filename=""
   if [[ "${MODE}" == "dev" ]]; then
     log info "Running package in DEV mode"
-    package_dev_compose_filename="docker-compose.dev.yml"
   else
     log info "Running package in PROD mode"
   fi
 
   (
-    docker::deploy_service "$STACK" "${COMPOSE_FILE_PATH}" "docker-compose.yml" "$package_dev_compose_filename"
+    docker::deploy_service "$STACK" "${COMPOSE_FILE_PATH}" "docker-compose.yml"
   ) || {
     log error "Failed to deploy package"
     exit 1
