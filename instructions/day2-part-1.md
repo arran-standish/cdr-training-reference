@@ -176,3 +176,43 @@ Run the `build-image.sh` then `instant-linux package init -n openhim --dev`. Sin
 
 ## 8 - (Optional) Cleanup
 Run `instant-linux package remove -n openhim` to clear up any state we have if you wish. This will reset the openhim password you set though and will have to login with `openhim-password` again so not a necessary step.
+
+## 9 - Bootstrap Hapi Fhir package
+Run the command `instant-linux package generate`
+- Package name: hapi-fhir
+- Name of package: HAPI FHIR training (not that important though)
+- Docker image: hapiproject/hapi
+- Description: what ever you want
+- Stack: doesn't matter (cli still needs to be updated to correctly generate stack details)
+- Type: doesn't matter
+- Dev file: yes with port 8080 and 3447 (important to specify a different target port otherwise will conflict with openhim-core)
+
+## 9.1 - Add a volume to hapi fhir
+Following the docs on [hapi fhir docker page](https://hub.docker.com/r/hapiproject/hapi) the only thing you'd need to do to get hapi-fhir up and running is to attach a volume. No need to define a database as a backing.
+```yaml
+services:
+  hapi-fhir:
+    image: hapiproject/hapi
+    volumes:
+      - "hapi-data:/data/hapi"
+
+volumes:
+  hapi-data:
+```
+
+## 9.2 - Add stack name to swarm.sh + updates
+Like before we need to:
+1. Declare a stack variable
+2. Update the service deploy function (add stack + base compose file) and remove sanity call
+3. Replace the function in destroy function to call stack_destroy
+
+## 9.3 - Add package to config.yaml project file
+
+## 10 - Build image + test changes
+1. Run `build-image.sh` and then bring up the two packages `instant-linux package init -n reverse-proxy -n hapi-fhir --dev`
+2. Navigate to localhost:3447 and you should see the hapi-fhir landing page.
+3. Post a bundle to localhost:3447
+4. Use the hapi-fhir UI to check that the data was indeed created.
+
+## 11 - Cleanup
+Run the command `instant-linux project destroy` to clear up and finish the exercise.

@@ -1,0 +1,10 @@
+version: '3.9'
+
+services:
+  hapi-fhir:
+    image: hapiproject/hapi
+    volumes:
+      - "hapi-data:/data/hapi"
+
+volumes:
+  hapi-data:

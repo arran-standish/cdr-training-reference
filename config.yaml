@@ -5,3 +5,4 @@ logPath: /tmp/logs
 packages:
     - reverse-proxy
     - openhim
+    - hapi-fhir

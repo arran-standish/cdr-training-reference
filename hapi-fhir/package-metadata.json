@@ -1,0 +1,9 @@
+{
+  "id": "hapi-fhir",
+  "name": "HAPI FHIR training",
+  "description": "HAPI FHIR",
+  "type": "infrastructure",
+  "version": "0.0.1",
+  "dependencies": [],
+  "environmentVariables": {}
+}
