@@ -6,3 +6,9 @@ services:
       - target: 80
         published: 80
         mode: host
+      - target: 5000
+        published: 5000
+        mode: host
+      - target: 5001
+        published: 5001
+        mode: host

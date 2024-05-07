@@ -6,14 +6,12 @@ Like the previous reverse-proxy package bootstrap run the command `instant-linux
 - Description: what ever you want
 - Stack: doesn't matter (cli still needs to be updated to correctly generate stack details)
 - Type: doesn't matter
-- Dev file: yes with port 8080 and 8080
+- Dev file: no
 
 ## 1.2 - Update the compose file to add the missing OpenHIM dependencies
 Since the platform CLI cannot generate composite compose files we will need to manually update the compose file it generated to have OpenHIM console and Mongodb. You can use the [OpenHIM docs compose file](http://openhim.org/docs/getting-started/prerequisites/) as a reference. 
 
 1. Rename compose service name from openhim to openhim-core
-2. Update service name in `docker-compose.dev.yml`
-3. Add ports 5000 and 5001 to `docker-compose.dev.yml`
 4. Add mongodb as a service to `docker-compose.yml` (make sure to define a volume)
 ```yaml
     mongodb: 
@@ -39,14 +37,6 @@ Since the platform CLI cannot generate composite compose files we will need to m
       - api_authenticationTypes=["token", "basic", "openid", "local"]
 ```
 7. Add openhim-console service to compose file
-8. Add port 9000 (note that it binds to port 80 in the container) to dev compose file under the openhim-console service though (not openhim-core like the others)
-```yaml
-  openhim-console:
-    ports:
-      - target: 80
-        published: 9000
-        mode: host
-```
 
 ## 1.3 - Update swarm.sh from bootstrap to working code
 Like with the reverse-proxy package setup we will need to change the generated swarm.sh file to pass in the stack to the relevant function calls.
@@ -56,13 +46,24 @@ Like with the reverse-proxy package setup we will need to change the generated s
 declare SERVICE_NAMES=()
 declare STACK="openhim" 
 ```
-2. Update the `docker::deploy_service` function call to include the stack and the base compose-file (line ~48)
+2. Update the `docker::deploy_service` function call to include the stack and the base compose-file and remove the reference to dev_compose (line ~48)
 ```sh
 ...
-docker::deploy_service "$STACK" "${COMPOSE_FILE_PATH}" "docker-compose.yml" "$package_dev_compose_filename"
+docker::deploy_service "$STACK" "${COMPOSE_FILE_PATH}" "docker-compose.yml"
 ```
 3. Remove the call to `docker::deploy_sanity` just under the call to `deploy_service` since `deploy_service` includes a sanity check in it now.
-4. Update `destroy_package` function to replace the `service_destroy` function call to `stack_destory` instead (line ~55)
+4. Remove references to dev_compose variables
+```sh
+  local package_dev_compose_filename=""
+  if [[ "${MODE}" == "dev" ]]; then
+    log info "Running package in DEV mode"
+    package_dev_compose_filename="docker-compose.dev.yml"
+
+  # turns into:
+  if [[ "${MODE}" == "dev" ]]; then
+    log info "Running package in DEV mode"
+```
+5. Update `destroy_package` function to replace the `service_destroy` function call to `stack_destory` instead (line ~55)
 ```sh
 docker::service_destroy "${SERVICE_NAMES[@]}" # turns into
 docker::stack_destroy $STACK
@@ -102,6 +103,7 @@ Since openhim binds port 8080 we now need to change the nginx port bindings. We 
     }
   }
 ```
+5. Add ports 5001 and 5000 to the reverse-proxy dev file.
 
 ## 3 - Add reverse-proxy as a dependency to openhim
 Under the `package-metadata.json` file add the name of the nginx package we defined `reverse-proxy` for this training reference.
