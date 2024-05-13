@@ -91,6 +91,7 @@ You can now deploy the reverse-proxy package.
 ./instant-linux package init -n reverse-proxy --dev
 ```
 > Instructor aid: Be sure to remind them that the `--dev` flag is required otherwise no ports will be exposed and will be unable to access nginx inside docker.
+> Instructor aid 2: It is quite likely that they will not have a swarm initalized yet, in which case this should fail. They will just have to run `docker swarm init` and then they should be fine.
 
 ## 6 - Test the package
 If everything went smoothly you can now go to localhost:8080 on your browser and it will display the nginx landing page.
