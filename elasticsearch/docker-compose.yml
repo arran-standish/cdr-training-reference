@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.0
+    environment:
+      xpack.security.enabled: "false"
+      discovery.type: "single-node"
+      ES_ELASTIC: ${ES_ELASTIC}
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    networks:
+      public:
+
+volumes:
+  es-data:
+
+networks:
+  public:
+    name: elasticsearch_public
+    external: true

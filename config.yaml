@@ -9,6 +9,7 @@ packages:
   - kafka
   - hapi-proxy
   - kafka-mapping-consumer
+  - elasticsearch
 
 profiles:
   - name: training
@@ -18,5 +19,7 @@ profiles:
       - hapi-fhir
       - kafka
       - hapi-proxy
+      - elasticsearch
+      - kafka-mapping-consumer
     dev: true
     only: false

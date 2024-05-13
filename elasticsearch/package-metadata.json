@@ -1,0 +1,11 @@
+{
+  "id": "elasticsearch",
+  "name": "Elasticsearch training",
+  "description": "Elasticsearch",
+  "type": "use-case",
+  "version": "0.0.1",
+  "dependencies": [],
+  "environmentVariables": {
+    "ES_ELASTIC": "dev_password_only"
+  }
+}

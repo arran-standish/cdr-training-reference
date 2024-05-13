@@ -4,11 +4,11 @@
   "description": "Mapper consumer training",
   "type": "infrastructure",
   "version": "0.0.1",
-  "dependencies": ["kafka", "elastic-search"],
+  "dependencies": ["kafka", "elasticsearch"],
   "environmentVariables": {
     "ES_USERNAME": "elastic",
     "ES_PASSWORD": "dev_password_only",
-    "ES_HOSTS": "elastic-search:9200",
+    "ES_HOSTS": "elasticsearch:9200",
     "KAFKA_HOSTS": "kafka:9092"
   }
 }

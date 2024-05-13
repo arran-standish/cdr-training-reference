@@ -5,6 +5,7 @@ services:
     image: jembi/eth-kafka-mapping-consumer:1.0.7
     networks:
       kafka:
+      elasticsearch:
     environment:
       ES_HOSTS: ${ES_HOSTS}
       ES_USERNAME: ${ES_USERNAME}
@@ -14,4 +15,7 @@ services:
 networks:
   kafka:
     name: kafka_public
+    external: true
+  elasticsearch:
+    name: elasticsearch_public
     external: true
