@@ -1,7 +1,7 @@
 # Elasticsearch Setup
 
 ## 1 - Bootstrap Elasticsearch package
-Like the previous reverse-proxy package bootstrap run the command `instant-linux package generate`
+Run the command `instant-linux package generate`
 - Package name: elasticsearch
 - Name of package: Elasticsearch training (not that important though)
 - Docker image: docker.elastic.co/elasticsearch/elasticsearch:7.13.0
@@ -12,7 +12,7 @@ Like the previous reverse-proxy package bootstrap run the command `instant-linux
 > Instructor Aid: They will need to use version 7 of Elastic, as that is the sdk version that the mapper consumer uses. So if you try and use the latest version (8.x) it will fail.
 
 ## 2 - Update the compose file to add required environment variables and volumes
-The official Elasticsearch docs for setting up elastic search within docker is quite invovled as it sets up SSL as part of the process. 
+The official Elasticsearch docs for setting up elastic search within docker is quite invovled as it sets up SSL as part of the process. As such we disable it through environment variables and set elastic to run in single mode.
 
 1. Set environment variables
 ```yaml
@@ -85,54 +85,164 @@ networks:
 
 # Kibana Setup
 
-## 7 - Build the image + test changes
-Run the `build-image.sh` then `instant-linux package init -n openhim --dev`. Since we added reverse-proxy as a dependency to openhim we do not need to specify reverse-proxy.
-1. Open localhost (since we bound openhim-console in nginx to port 80).
-2. Check that we see the normal openhim login screen
-3. Login
-  - username: root@openhim.org
-  - password: openhim-password
-4. Update password and see that it all looks right
-
-## 8 - (Optional) Cleanup
-Run `instant-linux package remove -n openhim` to clear up any state we have if you wish. This will reset the openhim password you set though and will have to login with `openhim-password` again so not a necessary step.
-
-## 9 - Bootstrap Hapi Fhir package
+## 1 - Bootstrap Kibana package
 Run the command `instant-linux package generate`
-- Package name: hapi-fhir
-- Name of package: HAPI FHIR training (not that important though)
-- Docker image: hapiproject/hapi
+- Package name: kibana
+- Name of package: Kibana training (not that important though)
+- Docker image: docker.elastic.co/kibana/kibana:7.13.0
 - Description: what ever you want
 - Stack: doesn't matter (cli still needs to be updated to correctly generate stack details)
 - Type: doesn't matter
-- Dev file: yes with port 8080 and 3447 (important to specify a different target port otherwise will conflict with openhim-core)
+- Dev file: no
+> Instructor Aid: They should match the versions of elastic and kibana
 
-## 9.1 - Add a volume to hapi fhir
-Following the docs on [hapi fhir docker page](https://hub.docker.com/r/hapiproject/hapi) the only thing you'd need to do to get hapi-fhir up and running is to attach a volume. No need to define a database as a backing.
+## 2 - Update the compose file to add required environment variables and networks
+1. Set environment variables
 ```yaml
-services:
-  hapi-fhir:
-    image: hapiproject/hapi
-    volumes:
-      - "hapi-data:/data/hapi"
+    environment:
+      ELASTICSEARCH_HOSTS: ${ES_HOSTS} # pass in elastic url
+      ELASTICSEARCH_PASSWORD: ${ES_ELASTIC} # elastic password
+      ES_KIBANA_SYSTEM: ${ES_KIBANA_SYSTEM} # kibana password
+```
+2. Set elasticsearch network
+```yaml
+version: '3.9'
 
-volumes:
-  hapi-data:
+services:
+  kibana:
+    networks:
+      elasticsearch:
+
+networks:
+  elasticsearch:
+    name: elasticsearch_public
+    external: true
 ```
 
-## 9.2 - Add stack name to swarm.sh + updates
-Like before we need to:
-1. Declare a stack variable
-2. Update the service deploy function (add stack + base compose file) and remove sanity call
-3. Replace the function in destroy function to call stack_destroy
+## 3 - Make necessary changes to package-metadata.json
+1. Add environment variable defaults
+```json
+  "environmentVariables": {
+    "ES_HOSTS": "http:\/\/elasticsearch:9200",
+    "ES_ELASTIC": "dev_password_only",
+    "ES_KIBANA_SYSTEM": "dev_password_only"
+  }
+```
+> Instructor Aid: Let them know that you will have to escape the /.
 
-## 9.3 - Add package to config.yaml project file
+2. Add elasticsearch as a dependency
+```json
+  "dependencies": ["elasticsearch"],
+```
 
-## 10 - Build image + test changes
-1. Run `build-image.sh` and then bring up the two packages `instant-linux package init -n reverse-proxy -n hapi-fhir --dev`
-2. Navigate to localhost:3447 and you should see the hapi-fhir landing page.
-3. Post a bundle to localhost:3447
-4. Use the hapi-fhir UI to check that the data was indeed created.
+## 4 - Make necessary changes to swarm.sh
+1. Add stack variable
+2. Remove sanity check + pass stack and compose file to deploy
+3. Use stack destroy instead
+4. Remove references to dev compose file
 
-## 11 - Cleanup
-Run the command `instant-linux project destroy` to clear up and finish the exercise.
+## 5 - Add kibana to the project config.yaml file and profile
+
+## 6 - Nginx setup
+Much like before we need to create a new server to listen on Kibana's port `5601` and expose that port on nginx side
+1. Add the server to `reverse-proxy/config/nginx.conf`
+```conf
+  server {
+    listen              5601;
+    location / {
+      resolver          127.0.0.11 valid=30s;
+      proxy_pass        http://kibana:5601;
+    }
+  }
+```
+2. Add ports to `reverse-proxy/docker-compose.dev.yml`
+```yaml
+services:
+  reverse-proxy:
+    ports:
+      # other ports above
+      ...
+      - target: 5601
+        published: 5601
+        mode: host
+```
+3. Attach kibana to reverse-proxy network
+```yaml
+services:
+  kibana:
+    networks:
+      elasticsearch:
+      reverse-proxy: # new
+
+networks:
+  elasticsearch:
+    name: elasticsearch_public
+    external: true
+  reverse-proxy: # new
+    name: reverse-proxy_public
+    external: true
+```
+
+# Adding Kafdrop
+Since online training was cut by a lot, it is unlikely that we will have covered the kafka cli and how to create topics using the cli. This is important since the kafka-mapping-consumer service will not start if the required topics are not present. To make it easier to create topics we add kafdrop as a service so we have a UI we can navigate to and can interact with to create topics and inspect topics etc.
+
+## 1 - Add kafdrop to kafka compose file
+```yaml
+services:
+  kafka:
+    ...
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:9092"
+```
+> Instructor aid: They will need to be given the topic list that they require up front. It is 2xx, patients, quarantine, and 4xx. 
+
+## 2 - Attach kafdrop to the reverse-proxy network and kafka network
+```yaml
+services:
+  kafdrop:
+    networks:
+      public: # needs to be able to communicate with kafka
+      reverse-proxy:
+
+networks:
+  public:
+    name: kafka_public
+    external: true
+  reverse-proxy: # new
+    name: reverse-proxy_public
+    external: true
+```
+
+## 3 - Add entry into nginx
+By default Kafdrop listens on port 9000
+```conf
+  server {
+    listen              9000;
+    location / {
+      resolver          127.0.0.11 valid=30s;
+      proxy_pass        http://kafdrop:9000;
+    }
+  }
+```
+
+## 4 - Expose port 9000 on nginx
+```yaml
+services:
+  reverse-proxy:
+    ports:
+      ...
+      - target: 9000
+        published: 9000
+        mode: host
+```
+
+## 4 - Build the image + test changes
+Run `build-image.sh` then `instant-linux package init --profile=training`
+1. Check that you can access kibana on localhost:5601
+2. Access kafdrop on localhost:9000 and create the topics: 2xx, 4xx, patients, quarantine
+2. Setup OpenHIM channels (if you are coming from a clean slate)
+3. Send some fhir data
+4. Query the data in kibana to make sure data is entering elastic

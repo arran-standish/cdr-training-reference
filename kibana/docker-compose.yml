@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.13.0
+    environment:
+      ELASTICSEARCH_HOSTS: ${ES_HOSTS}
+      ELASTICSEARCH_PASSWORD: ${ES_ELASTIC}
+      ES_KIBANA_SYSTEM: ${ES_KIBANA_SYSTEM}
+    networks:
+      elasticsearch:
+      reverse-proxy:
+
+networks:
+  elasticsearch:
+    name: elasticsearch_public
+    external: true
+  reverse-proxy:
+    name: reverse-proxy_public
+    external: true

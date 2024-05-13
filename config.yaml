@@ -10,6 +10,7 @@ packages:
   - hapi-proxy
   - kafka-mapping-consumer
   - elasticsearch
+  - kibana
 
 profiles:
   - name: training
@@ -21,5 +22,6 @@ profiles:
       - hapi-proxy
       - elasticsearch
       - kafka-mapping-consumer
+      - kibana
     dev: true
     only: false

@@ -16,7 +16,18 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
 
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    networks:
+      public:
+      reverse-proxy:
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:9092"
+
 networks:
   public:
     name: kafka_public
+    external: true
+  reverse-proxy:
+    name: reverse-proxy_public
     external: true
