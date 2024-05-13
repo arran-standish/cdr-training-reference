@@ -5,4 +5,5 @@ A simple reference repo to aid with the offline CDR training. Change branches to
 
 ## Day 2
 [Exercise 1 - Setting up OpenHIM with nginx, and Hapi FHIR](instructions/day2-part-1.md)
+
 [Exercise 2 - Setting up Kafka, Hapi Proxy, and Mapper Consumer](instructions/day2-part-2.md)
