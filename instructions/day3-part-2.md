@@ -1,4 +1,6 @@
 ## FHIR Bundles
+Once again you might want to allocate more time to the initial setup of the project here and have a smaller time allocation to testing end to end.
+
 There are various approaches you can take here.
 1. Create a postman bundle that you share with everyone somehow.
 2. Give everyone access to the ethiopia-on-platform repo and have them run the k6 script to send data
